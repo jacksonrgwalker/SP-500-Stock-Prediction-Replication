@@ -1,0 +1,29 @@
+name: 230Z-env
+channels:
+  - conda-forge
+dependencies:
+
+  # The Works
+  - python
+  - numpy
+  - pandas
+  - matplotlib
+
+  # Web Scraping
+  - beautifulsoup4
+  - requests
+
+  # Finance Data
+  - yfinance
+  - alpha_vantage
+
+  # Machine Learning
+  - tensorflow
+  - pytorch::pytorch
+  - scikit-learn
+  - pmdarima
+
+  - pip
+  - pip:
+    - stockstats
+    - pytorch-pretrained-bert
