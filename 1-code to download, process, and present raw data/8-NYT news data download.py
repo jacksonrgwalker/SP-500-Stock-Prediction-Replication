@@ -18,18 +18,20 @@ import time
 import os
 
 '''register for a free api key from NYT website: https://developer.nytimes.com/apis'''
+from dotenv import dotenv_values
+api_key = dotenv_values(".env")['NYT_API_KEY']
 
-Path('data\\8-NYT_data\\').mkdir(parents=True, exist_ok=True)
+Path('data/8-NYT_data/').mkdir(parents=True, exist_ok=True)
 
 for year in range(2000,2020):    
     for month in range(1,13):
-        if not os.path.isfile('data\\8-NYT_data\\' +str(year) + "_" + str(month) + '.json'):   
-            with urllib.request.urlopen("https://api.nytimes.com/svc/archive/v1/" + str(year) + "/" + str(month) + ".json?api-key=your api key") as url:
+        if not os.path.isfile('data/8-NYT_data/' +str(year) + "_" + str(month) + '.json'):   
+            with urllib.request.urlopen("https://api.nytimes.com/svc/archive/v1/" + str(year) + "/" + str(month) + f".json?api-key={api_key}") as url:
                 data = json.loads(url.read().decode())
-            with open('data\\8-NYT_data\\' +str(year) + "_" + str(month) + '.json', 'w') as f:
+            with open('data/8-NYT_data/' +str(year) + "_" + str(month) + '.json', 'w') as f:
                 json.dump(data, f)
-            time.sleep(120)
-        time.sleep(6)
+            time.sleep(10)
+        time.sleep(1)
         
 
 

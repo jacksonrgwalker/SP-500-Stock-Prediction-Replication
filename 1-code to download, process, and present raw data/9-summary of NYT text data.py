@@ -40,7 +40,7 @@ output = {}
 for year in tqdm(range(2000,2020)):
     cnt = Counter()
     for month in range(1,13):
-        data = json.loads(open('data\\8-NYT_data\\' +str(year) + "_" + str(month) + '.json').read())
+        data = json.loads(open('data/8-NYT_data/' +str(year) + "_" + str(month) + '.json').read())
         data = get_type_of_material(data)
         for item in data:
             cnt[item] += 1    

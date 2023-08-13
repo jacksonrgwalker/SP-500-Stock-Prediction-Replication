@@ -156,7 +156,8 @@ for ticker in ticker_name_list:
         ticker_name_list[ticker][item] = ticker_info_data[ticker][item]
 
 '''save data'''
-with open('data\\1-ticker_name_list.json', 'w') as fp:
+save_file_path = Path('data/1-ticker_name_list.json')
+with open(save_file_path, 'w') as fp:
     json.dump(ticker_name_list, fp)
 
 

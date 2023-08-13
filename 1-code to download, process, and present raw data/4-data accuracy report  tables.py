@@ -16,8 +16,9 @@ import numpy as np
 import pandas as pd
 ##################################
 
-_stock_AV = json.loads(open('data\\_cleaned_stock_data\\stock_data_AV.json').read())
-_stock_YF = json.loads(open('data\\_cleaned_stock_data\\stock_data_YF.json').read())
+stock_data_dir = Path('data/_cleaned_stock_data')
+_stock_AV = json.loads((stock_data_dir / 'stock_data_AV.json').read_text())
+_stock_YF = json.loads((stock_data_dir / 'stock_data_YF.json').read_text())
 
 ###############################################################################
 '''problematic data'''
