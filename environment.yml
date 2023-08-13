@@ -23,6 +23,9 @@ dependencies:
   - scikit-learn
   - pmdarima
 
+  # Secrets
+  - python-dotenv
+
   - pip
   - pip:
     - stockstats
