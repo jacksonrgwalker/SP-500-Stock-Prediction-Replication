@@ -8,6 +8,7 @@ dependencies:
   - numpy
   - pandas
   - matplotlib
+  - ipykernel
 
   # Web Scraping
   - beautifulsoup4
@@ -19,9 +20,11 @@ dependencies:
 
   # Machine Learning
   - tensorflow
+  - tensorflow-hub
   - pytorch::pytorch
   - scikit-learn
   - pmdarima
+  - nltk
 
   # Secrets
   - python-dotenv
