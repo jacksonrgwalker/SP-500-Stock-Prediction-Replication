@@ -16,33 +16,35 @@ import numpy as np
 import pandas as pd
 ##################################
 
-stock_data_dir = Path('data/_cleaned_stock_data')
+stock_data_dir = Path('data')
 _stock_AV = json.loads((stock_data_dir / 'stock_data_AV.json').read_text())
 _stock_YF = json.loads((stock_data_dir / 'stock_data_YF.json').read_text())
 
 ###############################################################################
 '''problematic data'''
-del _stock_AV['LUMN']
-del _stock_AV['DNR']
-del _stock_AV['LM']
-del _stock_AV['NE']
+_stock_AV.pop('LUMN', None)
+_stock_AV.pop('DNR', None)
+_stock_AV.pop('LM', None)
+_stock_AV.pop('NE', None)
 
-del _stock_YF['LUMN']
-del _stock_YF['DNR']
-del _stock_YF['LM']
-del _stock_YF['NE']
+_stock_YF.pop('LUMN', None)
+_stock_YF.pop('DNR', None)
+_stock_YF.pop('LM', None)
+_stock_YF.pop('NE', None)
 
 ###############################################################################
 '''check length of dates matching'''
 
+shared_tickers = set(_stock_AV.keys()).intersection(set(_stock_YF.keys()))
+
 AV_length = []
-for ticker in tqdm( _stock_AV.keys() ):
+for ticker in tqdm( shared_tickers ):
     AV_date = [date for date in list( _stock_AV[ticker].keys() )  if 
                datetime.strptime(date,'%Y-%m-%d') >=  datetime(1999, 11, 1, 0, 0) and  datetime.strptime(date,'%Y-%m-%d') <=  datetime(2019, 12, 31, 0, 0)]
     AV_length.append(len(AV_date))
     
 YF_length = []
-for ticker in tqdm( _stock_AV.keys() ):
+for ticker in tqdm( shared_tickers ):
     YF_date = [date for date in list( _stock_YF[ticker].keys() )  if 
                datetime.strptime(date,'%Y-%m-%d') >=  datetime(1999, 11, 1, 0, 0) and  datetime.strptime(date,'%Y-%m-%d') <=  datetime(2019, 12, 31, 0, 0)]
     YF_length.append(len(YF_date))
@@ -53,7 +55,7 @@ sum(temp==0)
 print(sum(temp==1))
 print(sum(temp>1))
 ticker_list = np.asarray( list(_stock_AV.keys()) )
-ticker_list[temp>1]
+# ticker_list[temp>1]
 
 #list(_stock_AV.keys())[np.where([temp>1])[1][0]]
 
@@ -62,7 +64,7 @@ ticker_list[temp>1]
 '''YF data have Open, High, Low, Close adjusted by split, while AV data do not'''
 
 dat = {} 
-for ticker in tqdm(_stock_AV.keys()):
+for ticker in tqdm(shared_tickers):
     AV = pd.DataFrame.from_dict(_stock_AV[ticker]).T
     AV.index = pd.to_datetime(AV.index)
     AV = AV.loc[ AV.index <= datetime(2020, 9, 30, 0, 0)]
@@ -93,7 +95,7 @@ for ticker in tqdm(_stock_AV.keys()):
 '''reliability of dividends and splits data'''
 
 bad_report = {}
-for ticker in tqdm(_stock_AV.keys()):
+for ticker in tqdm(shared_tickers):
     bad_report[ticker] = {}
     merge = dat[ticker]
     '''date of YF splits'''

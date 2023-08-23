@@ -24,14 +24,15 @@ import tensorflow_hub as hub
 import numpy as np
 ###############################################################################
 ''' download from https://tfhub.dev/google/nnlm-en-dim128-with-normalization/1'''
-vocab = load_vocab("model\\nnlm_dim_128\\assets\\tokens.txt")
+# vocab = load_vocab("model/nnlm_dim_128/assets/tokens.txt")
+vocab = load_vocab("1-code to download, process, and present raw data/model/nnlm_dim_128/assets/tokens.txt")
 ###############################################################################
 '''load data by month, get organization keywords names'''
 organization_keywords = []
 
 for year in tqdm(range(2000,2020)):
     for month in range(1,13):
-        data = json.loads(open('data\\8-NYT_data\\' +str(year) + "_" + str(month) + '.json').read())
+        data = json.loads(open('data/8-NYT_data/' +str(year) + "_" + str(month) + '.json').read())
         for article in data['response']['docs']:           
             for keyword in article['keywords']:
                 if keyword['name'] in ["organizations"]:        
@@ -69,7 +70,7 @@ for words in tqdm(_organization_keywords):
 
 ###############################################################################
 '''get company names'''
-company_keywords = json.loads(open('data\\1-ticker_name_list.json').read())
+company_keywords = json.loads(open('data/1-ticker_name_list.json').read())
 
 match_list = {}
 for ticker in company_keywords:
@@ -91,7 +92,7 @@ embed = hub.load("https://tfhub.dev/google/tf2-preview/nnlm-en-dim128-with-norma
 
 ###############################################################################
 
-NYT_organization_edit_distance = json.loads(open('data\\10-NYT_keyword_edit_distance.json').read())
+NYT_organization_edit_distance = json.loads(open('data/10-NYT_keyword_edit_distance.json').read())
 
 def f(ticker):
     companies = []
@@ -119,7 +120,7 @@ def f(ticker):
 
 ###############################################################################
 
-filtered_list = json.loads(open('data\\5-filtered_ticker_list.json').read())
+filtered_list = json.loads(open('data/5-filtered_ticker_list.json').read())
 
 Lst = []
 for ticker in filtered_list.keys():
@@ -132,7 +133,7 @@ for i in tqdm(range(len(Lst))):
     NYT_keyword_embedding_distance[Lst[i]] = output
     
     if (i in [0,50,100,150,200,250,300,350,400,450,len(Lst)-1]):
-        with open('data\\11-NYT_keyword_embedding_distance.json', 'w') as fp:
+        with open('data/11-NYT_keyword_embedding_distance.json', 'w') as fp:
             json.dump(NYT_keyword_embedding_distance, fp)  
 
 

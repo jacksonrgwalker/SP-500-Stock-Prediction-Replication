@@ -20,7 +20,7 @@ from datetime import datetime,timedelta
 import numpy as np
 
 
-_stock_dat = stock_data_indices = json.loads(open('data\\5-cleaned_stock_data.json').read())
+_stock_dat = stock_data_indices = json.loads(open('data/5-cleaned_stock_data.json').read())
 
 
 ###############################################################################
@@ -31,7 +31,12 @@ tickers_list = list(_stock_dat.keys())
 '''first load all variable names from csv files'''
 Lst = []
 for ticker in tqdm(tickers_list):
-    _valuation_measures = pd.read_csv( 'data\\7-merged_finance_data\\' + str(ticker) + "\\" + str(ticker) +'_monthly_valuation_measures.csv',
+    filepath = Path('data/7-merged_finance_data') / ticker / f'{ticker}_monthly_valuation_measures.csv'
+
+    if not filepath.exists():
+        continue
+
+    _valuation_measures = pd.read_csv(filepath,
                                  index_col=0)
     if 'ttm' in _valuation_measures.columns:
         del _valuation_measures['ttm']
@@ -78,8 +83,14 @@ def extract_daily_statement(_valuation_measures,available_dates,val_names):
 
 dat = {}
 for ticker in tqdm(tickers_list):
-    _valuation_measures = pd.read_csv( 'data\\7-merged_finance_data\\' + str(ticker) + "\\" + str(ticker) +'_monthly_valuation_measures.csv',
-                                 index_col=0)
+
+    filepath = Path('data/7-merged_finance_data') / ticker / f'{ticker}_monthly_valuation_measures.csv'
+
+    if not filepath.exists():
+        continue
+
+    _valuation_measures = pd.read_csv(filepath, index_col=0)
+    
     if 'ttm' in _valuation_measures.columns:
         del _valuation_measures['ttm']
     
@@ -106,6 +117,11 @@ for ticker in tqdm(tickers_list):
     temp_index = extract_daily_statement(_valuation_measures,available_dates,val_names)   
     '''fill in the stock values first'''
     temp_index = pd.merge(temp_index,temp_stock,how = "left",on=['date'])
+
+    # for some reason not all tickers have adj close? not sure why but for now we will just skip them
+    if 'Adj Close' not in temp_index.columns:
+        continue
+
     temp_index['Adj Close'] = temp_index['Adj Close'].fillna(method='ffill') 
     temp_index['Adj Close'] = temp_index['Adj Close'].fillna(method='bfill') 
     temp_index["return_t"] = np.log(temp_index['Adj Close']) - np.log(temp_index['Adj Close'].shift())
@@ -125,7 +141,7 @@ for ticker in tqdm(tickers_list):
     dat[ticker] = temp.to_dict()
 
 'save data'
-with open('data\\fundamental_indices_data.json', 'w') as fp:
+with open('data/fundamental_indices_data.json', 'w') as fp:
     json.dump(dat, fp)    
 
     

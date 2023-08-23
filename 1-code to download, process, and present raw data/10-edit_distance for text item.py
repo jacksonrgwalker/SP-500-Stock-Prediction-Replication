@@ -73,7 +73,7 @@ organization_keywords = []
 
 for year in tqdm(range(2000,2020)):
     for month in range(1,13):
-        data = json.loads(open('data\\8-NYT_data\\' +str(year) + "_" + str(month) + '.json').read())
+        data = json.loads(open('data/8-NYT_data/' +str(year) + "_" + str(month) + '.json').read())
         for article in data['response']['docs']:           
             for keyword in article['keywords']:
                 if keyword['name'] in ["organizations"]:        
@@ -89,7 +89,7 @@ for words in tqdm(organization_keywords):
 
 ###############################################################################
 '''get company names'''
-company_keywords = json.loads(open('data\\1-ticker_name_list.json').read())
+company_keywords = json.loads(open('data/1-ticker_name_list.json').read())
 
 match_list = {}
 for ticker in company_keywords:
@@ -169,6 +169,6 @@ if __name__ == '__main__':
         for ticker,item in zip(tickers,output):
             NYT_organization_edit_distance[ticker] = item
 
-    with open('data\\10-NYT_keyword_edit_distance.json', 'w') as fp:
+    with open('data/10-NYT_keyword_edit_distance.json', 'w') as fp:
         json.dump(NYT_organization_edit_distance, fp)  
 

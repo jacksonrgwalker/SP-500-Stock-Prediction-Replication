@@ -21,23 +21,46 @@ os.chdir(project_dir)
 sys.path.append(os.getcwd())
 #os.chdir('change to the mother working directory')
 
-save_file_path = Path('data/1-ticker_name_list.json')
-with open(save_file_path, 'r') as fp:
+ticker_names_file_path = Path('data/1-ticker_name_list.json')
+with open(ticker_names_file_path, 'r') as fp:
     _stock = json.load(fp)
 tickers = list( _stock.keys() )
 
 ###############################################################################
 ts = TimeSeries()
 
-stock_data_AV = {}
-#stock_data_AV  = json.loads(open('data\\stock_data_AV.json').read())
+
+save_file_path = Path('data/stock_data_AV.json')
+# read file if it exists
+if save_file_path.is_file():
+    with open(save_file_path, 'r') as fp:
+        stock_data_AV = json.load(fp)
+else:
+    stock_data_AV = {}
+
+symbols_with_errors = ['ADS', 'AGN']
 
 'load individual stock data for companies on list'
 for stock in tqdm( tickers ):
     if stock not in stock_data_AV.keys():
-        _data, _meta_data = ts.get_daily_adjusted(symbol = stock, outputsize = 'full')
+        if stock in symbols_with_errors:
+            print(f"Skipping {stock}")
+            continue
+
+        try:
+            _data, _meta_data = ts.get_daily_adjusted(symbol = stock, outputsize = 'full')
+
+        except ValueError as e:
+            if e.args[0].startswith("Invalid API call. Please retry or visit the documentation"):
+                print(f"Skipping {stock} due to API error")
+                symbols_with_errors.append(stock)
+                continue
+            else:
+                raise e
+            
+
         stock_data_AV[stock] = _data        
-        time.sleep(1)
+        time.sleep(2)
 
 'save data'
 save_file_path = Path('data/stock_data_AV.json')

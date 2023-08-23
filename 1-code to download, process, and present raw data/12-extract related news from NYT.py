@@ -22,14 +22,14 @@ import json
 ###############################################################################
 '''these results were mannually checked from the embedding distance outputs'''
 
-match_list = json.loads(open('data\\11-NYT_ticker_company_name.json').read())
+match_list = json.loads(open('data/11-NYT_ticker_company_name.json').read())
 
 ###############################################################################
 '''load NYT data'''
 Lst = []
 for year in tqdm(range(1999,2020)):
     for month in range(1,13):
-        data = json.loads(open('data\\NYT _data\\' +str(year) + "_" + str(month) + '.json').read())
+        data = json.loads(open('data/NYT _data/' +str(year) + "_" + str(month) + '.json').read())
         for article in data['response']['docs']:           
             temp= {}
             temp['keywords'] = article['keywords']
@@ -83,7 +83,7 @@ for ticker in tqdm(match_list):
                 temp['rank'] = keyword['rank']
                 output.append(temp)
           
-with open('data\\12-all_500_companies_news.json', 'w') as fp:
+with open('data/12-all_500_companies_news.json', 'w') as fp:
     json.dump(output, fp)   
 
 ###############################################################################
@@ -127,5 +127,5 @@ for article in tqdm(sp_news):
             temp['rank'] = keyword['rank']
             output.append(temp)
             
-with open('data\\12-sp_500_index_news.json', 'w') as fp:
+with open('data/12-sp_500_index_news.json', 'w') as fp:
     json.dump(output, fp)        
